@@ -13,9 +13,23 @@ proveedores = {
     "Pintureria Rex": {"contado": 1.84, "lista": 2.34, "imagen": "https://storage.googleapis.com/scatone_proovedores/rex.png", "moneda": "ARS"},
     "Sistinar": {"contado": 1.62, "lista": 2.22, "imagen": "https://storage.googleapis.com/scatone_proovedores/sistinar.jpg", "moneda": "ARS"},
     "Bell Color": {"contado": 1789, "lista": 2260, "imagen": "https://storage.googleapis.com/scatone_proovedores/bellcolor.png", "moneda": "USD"},
-    "Expocolor": {"contado": 2022.40, "lista": 2618.16, "imagen": "https://storage.googleapis.com/scatone_proovedores/expocolor.png", "moneda": "USD"},
-    "Macavi": {"contado": 1318.54, "lista": 2009.34, "imagen": "https://storage.googleapis.com/scatone_proovedores/macavi.jpg", "moneda": "USD"},
     "Sherwin Williams": {"contado": 2027.26, "lista": 2438.55, "imagen": "https://storage.googleapis.com/scatone_proovedores/sherwin-williams.jpg", "moneda": "USD"},
+    "Expocolor": {"contado": 2022.40, "lista": 2618.16, "imagen": "https://storage.googleapis.com/scatone_proovedores/expocolor.png", "moneda": "USD"},
+    "Macavi Raros": {"contado": 1318.54, "lista": 2009.34, "imagen": "https://storage.googleapis.com/scatone_proovedores/macavi.jpg", "moneda": "USD"},
+    "Macavi Epoxi": {"contado": 1318.54, "lista": 2009.34, "imagen": "https://storage.googleapis.com/scatone_proovedores/macavi.jpg", "moneda": "USD"},
+    "Macavi Automotor": {"contado": 1318.54, "lista": 2009.34, "imagen": "https://storage.googleapis.com/scatone_proovedores/macavi.jpg", "moneda": "USD"},
+    "Macavi Poliuretanos Linea Especial": {"contado": 1318.54, "lista": 2009.34, "imagen": "https://storage.googleapis.com/scatone_proovedores/macavi.jpg", "moneda": "USD"},
+    "Macavi Tenax Plastificantes": {"contado": 1318.54, "lista": 2009.34, "imagen": "https://storage.googleapis.com/scatone_proovedores/macavi.jpg", "moneda": "USD"},
+    "Macavi Esmalte Flash": {"contado": 1318.54, "lista": 2009.34, "imagen": "https://storage.googleapis.com/scatone_proovedores/macavi.jpg", "moneda": "USD"},
+    "Macavi Acrilito Adherente": {"contado": 1318.54, "lista": 2009.34, "imagen": "https://storage.googleapis.com/scatone_proovedores/macavi.jpg", "moneda": "USD"},
+    "Selladores y Lacas Tintas": {"contado": 1318.54, "lista": 2009.34, "imagen": "https://storage.googleapis.com/scatone_proovedores/macavi.jpg", "moneda": "USD"},
+    "Macavi Barnices Impregnantes Deck": {"contado": 1318.54, "lista": 2009.34, "imagen": "https://storage.googleapis.com/scatone_proovedores/macavi.jpg", "moneda": "USD"},
+    "Macavi Sinteticos": {"contado": 1318.54, "lista": 2009.34, "imagen": "https://storage.googleapis.com/scatone_proovedores/macavi.jpg", "moneda": "USD"},
+    "Macavi Horneables": {"contado": 1318.54, "lista": 2009.34, "imagen": "https://storage.googleapis.com/scatone_proovedores/macavi.jpg", "moneda": "USD"},
+    "Macavi Duatlon": {"contado": 1318.54, "lista": 2009.34, "imagen": "https://storage.googleapis.com/scatone_proovedores/macavi.jpg", "moneda": "USD"},
+    "Macavi Antioxido": {"contado": 1318.54, "lista": 2009.34, "imagen": "https://storage.googleapis.com/scatone_proovedores/macavi.jpg", "moneda": "USD"},
+    "Macavi Diluyentes": {"contado": 1318.54, "lista": 2009.34, "imagen": "https://storage.googleapis.com/scatone_proovedores/macavi.jpg", "moneda": "USD"},
+
 }
 
 datos_proveedor = {}
@@ -31,10 +45,6 @@ def colocar_widgets_fijos(frame, columnas_dinamicas, precio_base_entry, resultad
     """
     fila_base = len(columnas_dinamicas) + 6  # Determina la fila base en función de las características dinámicas
 
-    # Precio Base
-    ttk.Label(frame, text="Precio Base:", font=("Arial", 14)).grid(row=fila_base, column=0, pady=10, sticky=tk.W)
-    precio_base_entry.grid(row=fila_base, column=1, pady=10, sticky=tk.W)
-
     # Resultados
     ttk.Label(frame, text="Precio Contado Efectivo:", font=("Arial", 14)).grid(row=fila_base + 1, column=0, pady=10, sticky=tk.W)
     ttk.Label(frame, textvariable=resultado_contado, font=("Arial", 14)).grid(row=fila_base + 1, column=1, pady=10, sticky=tk.W)
@@ -45,26 +55,26 @@ def colocar_widgets_fijos(frame, columnas_dinamicas, precio_base_entry, resultad
     # Cotización del dólar
     cotizacion_label.grid(row=fila_base + 3, column=0, columnspan=2, pady=20, sticky=tk.W)
 
-def cargar_productos(proveedor_var, sheet, frame, imagen_proveedor_label, producto_dropdown, tipo_dropdown, precio_base_entry, resultado_contado, resultado_lista, cotizacion_label, producto_var, tipo_var, cotizacion):
+def cargar_productos(proveedor_var, sheet, frame, imagen_proveedor_label, producto_dropdown, tipo_dropdown, medida_dropdown, color_dropdown, resultado_contado, resultado_lista, cotizacion_label, producto_var, tipo_var, medida_var, color_var, cotizacion):
     """
-    Carga los productos del proveedor seleccionado y organiza los widgets dinámicamente.
+    Carga los productos del proveedor seleccionado y actualiza los dropdowns de Producto, Tipo, Medida y Color.
     """
     proveedor_seleccionado = proveedor_var.get()
     if not proveedor_seleccionado:
         return
 
     try:
-        # Limpiar los campos de precio al cambiar de proveedor
-        precio_base_entry.delete(0, tk.END)
+        # Limpiar campos al cambiar de proveedor
+        producto_dropdown["values"] = []
+        tipo_dropdown["values"] = []
+        medida_dropdown["values"] = []
+        color_dropdown["values"] = []
+        producto_var.set("")
+        tipo_var.set("")
+        medida_var.set("")
+        color_var.set("")
         resultado_contado.set("")
         resultado_lista.set("")
-        print("Campos de precios limpiados al cambiar de proveedor.")
-
-        # Limpiar widgets dinámicos previos
-        global widgets_dinamicos
-        for _, widget in widgets_dinamicos:
-            widget.destroy()
-        widgets_dinamicos.clear()
 
         # Actualizar imagen del proveedor
         if proveedor_seleccionado in proveedores:
@@ -79,104 +89,139 @@ def cargar_productos(proveedor_var, sheet, frame, imagen_proveedor_label, produc
         # Guardar datos del proveedor
         datos_proveedor[proveedor_seleccionado] = datos
 
-        # Obtener columnas adicionales
-        columnas = list(datos[0].keys())
-        if not all(col in columnas for col in ["Producto", "Tipo", "Precio"]):
+        # Verificar columnas obligatorias
+        columnas_necesarias = ["Producto", "Tipo", "Medida o Cantidad", "Precio"]
+        if not all(col in datos[0] for col in columnas_necesarias):
             messagebox.showerror("Error", f"Faltan columnas obligatorias en la hoja de {proveedor_seleccionado}.")
             return
 
-        # Generar dropdown para productos
-        productos = list(set(row["Producto"] for row in datos))
+        # Generar lista de productos
+        productos = sorted(set(row["Producto"] for row in datos))
         producto_dropdown["values"] = productos
-        producto_var.set("")  # Reiniciar producto seleccionado
-
-        # Limpiar dropdowns de tipo y columnas adicionales
-        tipo_dropdown["values"] = []
-        tipo_var.set("")
-
-        # Crear widgets dinámicos para columnas adicionales
-        for i, columna in enumerate(columnas):
-            if columna not in ["Producto", "Tipo", "Precio"]:
-                ttk.Label(frame, text=f"{columna}:", font=("Arial", 14)).grid(row=6 + i, column=0, pady=5, sticky=tk.W)
-                entry = ttk.Combobox(frame, font=("Arial", 14), state="readonly", width=40)
-                entry.grid(row=6 + i, column=1, pady=5, sticky=tk.W)
-                widgets_dinamicos.append((columna, entry))  # Guardar referencia al widget dinámico
-
-        # Reorganizar widgets fijos
-        colocar_widgets_fijos(frame, columnas, precio_base_entry, resultado_contado, resultado_lista, cotizacion_label)
 
     except Exception as e:
         messagebox.showerror("Error", f"No se pudieron cargar los productos. Detalle: {e}")
 
 
-def actualizar_tipos(proveedor_var, producto_var, frame, tipo_dropdown):
+def actualizar_tipos(proveedor_var, producto_var, tipo_dropdown, medida_dropdown, color_dropdown, tipo_var, medida_var, color_var):
     """
-    Actualiza los tipos según el producto seleccionado y muestra los datos correspondientes en las columnas dinámicas.
+    Actualiza los valores de Tipo, Medida o Cantidad y Color (si existe) según el Producto seleccionado.
     """
     proveedor_seleccionado = proveedor_var.get()
     producto_seleccionado = producto_var.get()
+
     if not proveedor_seleccionado or not producto_seleccionado:
         return
 
     try:
         datos = datos_proveedor.get(proveedor_seleccionado, [])
-        fila_producto = next((row for row in datos if row["Producto"] == producto_seleccionado), None)
-        if not fila_producto:
-            messagebox.showwarning("Advertencia", "No se encontró información para el producto seleccionado.")
-            return
 
-        # Actualizar el dropdown de tipos
-        tipos = list(set(row["Tipo"] for row in datos if row["Producto"] == producto_seleccionado))
-        tipo_dropdown["values"] = tipos
-        tipo_dropdown.set("")
+        # Filtrar tipos según el producto seleccionado
+        tipos_disponibles = sorted(set(row["Tipo"] for row in datos if row["Producto"] == producto_seleccionado))
+        tipo_dropdown["values"] = tipos_disponibles
+        tipo_var.set("")  # Resetear el tipo seleccionado
 
-        # Actualizar widgets dinámicos según la fila seleccionada
-        for columna, widget in widgets_dinamicos:
-            valor_columna = fila_producto.get(columna, "")
-            widget["values"] = [valor_columna] if valor_columna else []
-            widget.set(valor_columna if valor_columna else "")
+        # Detectar si la columna "Color" está presente
+        columna_color_presente = "Color" in datos[0]
 
+        def actualizar_medidas_y_colores(event=None):
+            tipo_seleccionado = tipo_var.get()
+
+            # Filtrar medidas según producto y tipo
+            medidas_disponibles = sorted(
+                set(
+                    row["Medida o Cantidad"]
+                    for row in datos
+                    if row["Producto"] == producto_seleccionado and row["Tipo"] == tipo_seleccionado
+                )
+            )
+            medida_dropdown["values"] = medidas_disponibles
+            medida_var.set("")  # Resetear medida seleccionada
+
+            # Solo cargar colores si la columna existe
+            if columna_color_presente:
+                colores_disponibles = sorted(
+                    set(
+                        row["Color"]
+                        for row in datos
+                        if row["Producto"] == producto_seleccionado and row["Tipo"] == tipo_seleccionado
+                    )
+                )
+                color_dropdown["values"] = colores_disponibles
+                color_var.set("")  # Resetear color seleccionado
+                color_dropdown.grid()  # Asegurar que se muestre
+            else:
+                color_dropdown["values"] = []
+                color_var.set("")
+                color_dropdown.grid_remove()  # Ocultar el dropdown
+
+        # Asociar el evento al dropdown de tipo
+        tipo_dropdown.bind("<<ComboboxSelected>>", actualizar_medidas_y_colores)
+
+        # Limpiar dropdowns de medida y color si no hay tipo seleccionado
+        medida_dropdown["values"] = []
+        medida_var.set("")
+        color_dropdown["values"] = []
+        color_var.set("")
     except Exception as e:
-        messagebox.showerror("Error", f"Error al actualizar los datos dinámicos. Detalle: {e}")
+        messagebox.showerror("Error", f"Error al actualizar los datos. Detalle: {e}")
 
-def cargar_precio(proveedor_var, producto_var, tipo_var, frame, precio_base_entry, resultado_contado, resultado_lista, cotizacion_label, cotizacion):
+def limpiar_formato_monetario(valor):
     """
-    Calcula los precios según el proveedor, producto, tipo, y columnas dinámicas seleccionadas.
+    Convierte un valor con formato monetario a un número flotante.
+    Ejemplo: "$ 98.963,09" -> 98963.09
+    """
+    if isinstance(valor, str):
+        # Elimina el símbolo de moneda y los separadores de miles
+        valor = valor.replace("$", "").replace(".", "").replace(",", ".").strip()
+    try:
+        return float(valor)
+    except ValueError:
+        raise ValueError(f"Error al convertir el valor '{valor}' a float.")
+
+
+def cargar_precio(proveedor_var, producto_var, tipo_var, medida_var, color_var, resultado_contado, resultado_lista, cotizacion):
+    """
+    Obtiene y muestra el precio según el producto, tipo, medida y color (si aplica) seleccionados.
     """
     proveedor_seleccionado = proveedor_var.get()
     producto_seleccionado = producto_var.get()
     tipo_seleccionado = tipo_var.get()
+    medida_seleccionada = medida_var.get()
 
-    if not (proveedor_seleccionado and producto_seleccionado and tipo_seleccionado):
+    datos = datos_proveedor.get(proveedor_seleccionado, [])
+    columna_color_presente = "Color" in datos[0] if datos else False
+
+    # Verificar los campos obligatorios (Color no será obligatorio)
+    if not (proveedor_seleccionado and producto_seleccionado and tipo_seleccionado and medida_seleccionada):
         messagebox.showwarning("Advertencia", "Por favor, seleccione todos los campos.")
         return
 
     try:
-        # Obtener los datos del proveedor y la fila del producto/tipo
-        datos = datos_proveedor.get(proveedor_seleccionado, [])
-        fila_producto = next((row for row in datos if row["Producto"] == producto_seleccionado and row["Tipo"] == tipo_seleccionado), None)
+        # Filtrar la fila exacta según los parámetros disponibles
+        fila_producto = next(
+            (row for row in datos
+             if row["Producto"] == producto_seleccionado
+             and row["Tipo"] == tipo_seleccionado
+             and row["Medida o Cantidad"] == medida_seleccionada
+             and (not columna_color_presente or row.get("Color") == color_var.get())),
+            None
+        )
 
         if not fila_producto:
-            messagebox.showwarning("Advertencia", "No se encontró información para el producto seleccionado.")
+            resultado_contado.set("")
+            resultado_lista.set("")
             return
 
-        # Obtener precio base y realizar conversión si es necesario
-        precio_base = float(fila_producto.get("Precio", 0))
-        moneda_proveedor = proveedores[proveedor_seleccionado].get("moneda", "ARS")
-        if moneda_proveedor == "USD":
-            precio_base *= cotizacion.get()  # Convertir a moneda local usando la cotización del dólar
+        # Obtener y limpiar el precio base
+        precio_base = limpiar_formato_monetario(fila_producto["Precio"])
+        precio_contado = precio_base * proveedores[proveedor_seleccionado]["contado"]
+        precio_lista = precio_base * proveedores[proveedor_seleccionado]["lista"]
 
-        # Calcular precios contado y lista
-        multiplicador_contado = proveedores[proveedor_seleccionado].get("contado", 1)
-        multiplicador_lista = proveedores[proveedor_seleccionado].get("lista", 1)
-        precio_contado = precio_base * multiplicador_contado
-        precio_lista = precio_base * multiplicador_lista
-
-        # Mostrar resultados en la interfaz
-        precio_base_entry.delete(0, tk.END)
-        precio_base_entry.insert(0, f"${precio_base:,.2f}")
+        # Actualizar los resultados
         resultado_contado.set(f"${precio_contado:,.2f}")
         resultado_lista.set(f"${precio_lista:,.2f}")
 
     except Exception as e:
         messagebox.showerror("Error", f"Error al calcular el precio. Detalle: {e}")
+
